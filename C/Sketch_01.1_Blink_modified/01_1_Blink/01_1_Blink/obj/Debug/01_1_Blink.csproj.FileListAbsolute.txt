@@ -1,0 +1,11 @@
+C:\Users\luisa\GitHub\Raspberry_Pi_Pico_Tutorial\C\Sketch_01.1_Blink_modified\01_1_Blink\01_1_Blink\bin\Debug\01_1_Blink.exe.config
+C:\Users\luisa\GitHub\Raspberry_Pi_Pico_Tutorial\C\Sketch_01.1_Blink_modified\01_1_Blink\01_1_Blink\bin\Debug\01_1_Blink.exe
+C:\Users\luisa\GitHub\Raspberry_Pi_Pico_Tutorial\C\Sketch_01.1_Blink_modified\01_1_Blink\01_1_Blink\bin\Debug\01_1_Blink.pdb
+C:\Users\luisa\GitHub\Raspberry_Pi_Pico_Tutorial\C\Sketch_01.1_Blink_modified\01_1_Blink\01_1_Blink\obj\Debug\01_1_Blink.csproj.AssemblyReference.cache
+C:\Users\luisa\GitHub\Raspberry_Pi_Pico_Tutorial\C\Sketch_01.1_Blink_modified\01_1_Blink\01_1_Blink\obj\Debug\01_1_Blink.csproj.SuggestedBindingRedirects.cache
+C:\Users\luisa\GitHub\Raspberry_Pi_Pico_Tutorial\C\Sketch_01.1_Blink_modified\01_1_Blink\01_1_Blink\obj\Debug\_01_1_Blink.Form1.resources
+C:\Users\luisa\GitHub\Raspberry_Pi_Pico_Tutorial\C\Sketch_01.1_Blink_modified\01_1_Blink\01_1_Blink\obj\Debug\_01_1_Blink.Properties.Resources.resources
+C:\Users\luisa\GitHub\Raspberry_Pi_Pico_Tutorial\C\Sketch_01.1_Blink_modified\01_1_Blink\01_1_Blink\obj\Debug\01_1_Blink.csproj.GenerateResource.cache
+C:\Users\luisa\GitHub\Raspberry_Pi_Pico_Tutorial\C\Sketch_01.1_Blink_modified\01_1_Blink\01_1_Blink\obj\Debug\01_1_Blink.csproj.CoreCompileInputs.cache
+C:\Users\luisa\GitHub\Raspberry_Pi_Pico_Tutorial\C\Sketch_01.1_Blink_modified\01_1_Blink\01_1_Blink\obj\Debug\01_1_Blink.exe
+C:\Users\luisa\GitHub\Raspberry_Pi_Pico_Tutorial\C\Sketch_01.1_Blink_modified\01_1_Blink\01_1_Blink\obj\Debug\01_1_Blink.pdb

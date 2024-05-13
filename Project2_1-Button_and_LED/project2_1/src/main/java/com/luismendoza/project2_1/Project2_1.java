@@ -4,11 +4,22 @@
  */
 package com.luismendoza.project2_1;
 
+import com.fazecast.jSerialComm.SerialPort;
+import com.fazecast.jSerialComm.SerialPortDataListener;
+import com.fazecast.jSerialComm.SerialPortEvent;
+import java.awt.Color;
+import java.io.IOException;
+import java.io.OutputStream;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author luis-mendoza
  */
 public class Project2_1 extends javax.swing.JFrame {
+    SerialPort serialPort1;
+    SerialPort commPorts[];
+    Boolean isPortOpen = false;
 
     /**
      * Creates new form Project2_1
@@ -26,21 +37,153 @@ public class Project2_1 extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jLabel1.setFont(new java.awt.Font("Liberation Sans", 0, 24)); // NOI18N
+        jLabel1.setText("Project 2.1 Button & LED");
+
+        jLabel2.setText("COM Ports:");
+
+        jComboBox1.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                jComboBox1PopupMenuWillBecomeVisible(evt);
+            }
+        });
+
+        jButton1.setText("Open Port");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setBackground(new java.awt.Color(255, 255, 255));
+        jButton2.setText("LED");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(64, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(59, 59, 59)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(58, 58, 58))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(63, 63, 63)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1))
+                .addContainerGap(63, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jComboBox1PopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_jComboBox1PopupMenuWillBecomeVisible
+        // TODO add your handling code here:
+        commPorts = SerialPort.getCommPorts();
+        jComboBox1.removeAllItems();
+        
+        for(SerialPort commPort : commPorts) {
+            jComboBox1.addItem(commPort.getSystemPortName() + " - " + commPort.getDescriptivePortName());
+        }
+    }//GEN-LAST:event_jComboBox1PopupMenuWillBecomeVisible
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        if(!isPortOpen) {
+            try {
+                commPorts = SerialPort.getCommPorts();
+                serialPort1 = commPorts[jComboBox1.getSelectedIndex()];
+                serialPort1.setComPortParameters(9600, 8, 1, 0);
+                serialPort1.openPort();
+                serialPort1.addDataListener(new SerialPortDataListener() {
+                    @Override
+                    public int getListeningEvents() {return SerialPort.LISTENING_EVENT_DATA_RECEIVED;}
+                    @Override
+                    public void serialEvent(SerialPortEvent event)
+                    {
+                        byte[] newData = event.getReceivedData();
+                        
+                        if((char)newData[0] == '1') {
+                            jButton2.setBackground(Color.red);
+                        }
+                        else {
+                            jButton2.setBackground(Color.white);
+                        }
+                    }
+                });
+                
+                if(serialPort1.getDescriptivePortName().contains("Pico")) {
+                    serialPort1.setDTR();
+                    serialPort1.setRTS();
+                }
+
+                if(serialPort1.isOpen()) {
+                    JOptionPane.showMessageDialog(this, "The port was successfully opened!");
+                    isPortOpen = serialPort1.isOpen();
+                    jButton1.setText("Close Port");
+                    jComboBox1.setEnabled(false);
+                }
+                else {
+                    JOptionPane.showMessageDialog(this, "The port couldn't be opened!");
+                }
+            }
+            catch(ArrayIndexOutOfBoundsException a) {
+                JOptionPane.showMessageDialog(this, "Select a COM port!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            catch(Exception e) {
+                JOptionPane.showMessageDialog(this, e, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        else {
+            try {
+                serialPort1.closePort();
+                JOptionPane.showMessageDialog(this, "The port was successfully closed!");
+                isPortOpen = serialPort1.isOpen();
+                jButton1.setText("Open Port");
+                jComboBox1.setEnabled(true);
+
+                if(serialPort1.getDescriptivePortName().contains("Pico")) {
+                    serialPort1.clearDTR();
+                    serialPort1.clearRTS();
+                }
+            }
+            catch(Exception e) {
+                JOptionPane.showMessageDialog(this, e, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -78,5 +221,10 @@ public class Project2_1 extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
 }

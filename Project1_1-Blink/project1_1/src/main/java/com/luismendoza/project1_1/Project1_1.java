@@ -82,6 +82,7 @@ public class Project1_1 extends javax.swing.JFrame {
             }
         });
 
+        jButton3.setBackground(new java.awt.Color(255, 255, 255));
         jButton3.setText("LED");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

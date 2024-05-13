@@ -18,7 +18,7 @@ const int buttonPin = 2;  // the number of the pushbutton pin
 
 // variables will change:
 int buttonState = 0;  // variable for reading the pushbutton status
-bool isTimeChecked = false;
+bool isLEDHigh = false;
 unsigned long time_now;
 
 void setup() {
@@ -32,36 +32,21 @@ void setup() {
 void loop() {
 	// read the state of the pushbutton value:
 	buttonState = digitalRead(buttonPin);
-	int time_period = 100;
 
 	// check if the pushbutton is pressed. If it is, the buttonState is HIGH:
 	if (buttonState == HIGH) {
-		// turn LED on:
-		digitalWrite(LED_BUILTIN, HIGH);
-
-		if (!isTimeChecked) {
+		if (!isLEDHigh) {
+			// turn LED on:
+			digitalWrite(LED_BUILTIN, HIGH);
 			Serial.write("1"); // Writes binary data to the serial port.
-			time_now = millis(); // Return the number of milliseconds passed since the Arduino board began running the current program.
-			isTimeChecked = true;
-		}
-		else {
-			if(millis() > time_now + time_period) {
-				isTimeChecked = false;
-			}
+			isLEDHigh = true;
 		}		
 	} else {
-		// turn LED off:
-		digitalWrite(LED_BUILTIN, LOW);
-
-		if (!isTimeChecked) {
+		if (isLEDHigh) {
+			// turn LED off:
+			digitalWrite(LED_BUILTIN, LOW);
 			Serial.write("0"); // Writes binary data to the serial port.
-			time_now = millis(); // Return the number of milliseconds passed since the Arduino board began running the current program.
-			isTimeChecked = true;
+			isLEDHigh = false;
 		}
-		else {
-			if(millis() > time_now + time_period) {
-				isTimeChecked = false;
-			}
-		}	
 	}
 }

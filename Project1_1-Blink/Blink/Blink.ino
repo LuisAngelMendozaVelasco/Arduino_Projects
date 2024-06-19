@@ -1,68 +1,58 @@
 /*
-	Blink
+	Project 1.1 Blink
 
-	Turns an LED on for one second, then off for one second, repeatedly.
+	Turn an LED on for one second, then off for one second, repeatedly.
 */
 
-// the setup function runs once when you press reset or power the board
+// Declare variables
+String command;
+int time_period = 1000;
+
+// The setup function runs once when you press reset or power the board
 void setup() {
-	// initialize digital pin LED_BUILTIN as an output.
-	pinMode(LED_BUILTIN, OUTPUT);
-	// Initialize serial communication
-	Serial.begin(9600);
+	pinMode(LED_BUILTIN, OUTPUT); // Initialize digital pin as an output
+	Serial.begin(9600); // Initialize serial communication
 }
 
-// the loop function runs over and over again forever
+// The loop function runs over and over again forever
 void loop() {
-	// Declare local variables
-	char data = '0';
-	unsigned long time_now = 0;
-	int time_period = 1000;
-	
-	/*
-	Serial.available()
-	Get the number of bytes (characters) available for reading from the serial port. This is data that’s already arrived and stored in the serial 
-	receive buffer (which holds 64 bytes).
-	*/
-	if(Serial.available() > 0){
-		data = Serial.read(); // Read incoming serial data.
+	// Serial.available() -> Get the number of bytes (characters) available for reading from the serial port
+	if (Serial.available() > 0) {
+		command = Serial.readStringUntil('\n'); // Read incoming serial data
 	}
 			
-	while(data == '1'){
-		digitalWrite(LED_BUILTIN, HIGH); // turn the LED on (HIGH is the voltage level)
-		Serial.write("1"); // Writes binary data to the serial port.                          
-		time_now = millis(); // Return the number of milliseconds passed since the Arduino board began running the current program.
-		data = custom_delay(time_now, time_period);	// Wait for a second and return char variable.
+	while (command == "start") {
+		digitalWrite(LED_BUILTIN, HIGH); // Turn the LED on (HIGH is the voltage level)
+		Serial.write("on"); // Write binary data to the serial port                      
+		command = custom_delay(time_period); // Wait for a time and return string variable
 
-		if(data == '0') {
-			break;
-		}
+		if (command == "stop") break;
 
-		digitalWrite(LED_BUILTIN, LOW); // turn the LED off by making the voltage LOW
-		Serial.write("0"); // Write binary data to the serial port.    
-		time_now = millis(); // Return the number of milliseconds passed since the Arduino board began running the current program.
-		data = custom_delay(time_now, time_period); // Wait for a second and return char variable.
+		digitalWrite(LED_BUILTIN, LOW); // Turn the LED off by making the voltage LOW
+		Serial.write("off"); // Write binary data to the serial port
+		command = custom_delay(time_period); // Wait for a time and return string variable
 
-		if(data == '0') {
-			break;
-		}
+		if (command == "stop") break;
 	}
 }
 
-// Function for custom time delay. If "0" is received during the time delay, the LED stops blinking.
-char custom_delay(unsigned long time_now, int time_period) {
-	char data = '1';
+// Function for custom time delay
+String custom_delay (int time_period) {
+	String command = "start";
+	unsigned long time_now = millis(); // Return the number of milliseconds passed since the Arduino board began running the current program
 	
-	while(millis() < time_now + time_period) {
-		if(Serial.available() > 0){
-			if(Serial.read() == '0') {
-				data = '0';
+	while (millis() < time_now + time_period) {
+		if (Serial.available() > 0) {
+      		command = Serial.readStringUntil('\n'); // Read incoming serial data
+
+			if (command == "stop") {
 				digitalWrite(LED_BUILTIN, LOW);
-				Serial.write("0");
-				break; 
+				Serial.write("off"); // Write binary data to the serial port
+				
+				return command;
 			}
 		}        
 	}
 	
-	return data;
+	return command;
 }

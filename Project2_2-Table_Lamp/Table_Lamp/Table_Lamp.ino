@@ -8,10 +8,9 @@
 */
 
 // Constants won't change, they're used here to set pin numbers
-const int buttonPin = 2;  // The number of the push button pin
+const int buttonPin = 2; // The number of the push button pin
 
-// Variables will change:
-int buttonState;  // Variable for reading the push button status
+// Variable will change:
 bool isLEDHigh = false;
 
 void setup() {
@@ -29,12 +28,8 @@ void loop() {
 			isLEDHigh = !isLEDHigh;
 			digitalWrite(LED_BUILTIN, isLEDHigh);
 
-			if (isLEDHigh) {
-				Serial.write("on"); // Write binary data to the serial port
-			}
-			else {
-				Serial.write("off"); // Write binary data to the serial port
-			}
+			if (isLEDHigh) Serial.write("on"); // Write binary data to the serial port
+			else Serial.write("off"); // Write binary data to the serial port
 		}
 
 		while (digitalRead(buttonPin) == HIGH);

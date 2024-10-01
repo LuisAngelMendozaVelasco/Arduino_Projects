@@ -86,7 +86,6 @@ public class Project4_1 extends javax.swing.JFrame {
             }
         });
 
-        jButton3.setBackground(new java.awt.Color(255, 255, 255));
         jButton3.setText("LED");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -94,21 +93,22 @@ public class Project4_1 extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(115, 115, 115))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(50, 50, 50)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton2)
-                    .addComponent(jButton1))
-                .addGap(76, 76, 76)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(50, 50, 50)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton2)
+                            .addComponent(jButton1))
+                        .addGap(64, 64, 64)
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(50, 50, 50))
         );
         layout.setVerticalGroup(
@@ -120,14 +120,17 @@ public class Project4_1 extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(117, 117, 117)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(100, 100, 100)
                         .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2))
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(116, 116, 116))
+                        .addGap(61, 61, 61)
+                        .addComponent(jButton2)
+                        .addGap(100, 100, 100))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(115, 115, 115))))
         );
 
         pack();
@@ -138,9 +141,8 @@ public class Project4_1 extends javax.swing.JFrame {
         commPorts = SerialPort.getCommPorts();
         jComboBox1.removeAllItems();
         
-        for (SerialPort commPort : commPorts) {
+        for (SerialPort commPort : commPorts)
             jComboBox1.addItem(commPort.getSystemPortName() + " - " + commPort.getDescriptivePortName());
-        }
     }//GEN-LAST:event_jComboBox1PopupMenuWillBecomeVisible
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -158,15 +160,19 @@ public class Project4_1 extends javax.swing.JFrame {
                     @Override
                     public void serialEvent(SerialPortEvent event)
                     {
-                        byte[] newData = event.getReceivedData();
+                        String newData = new String(event.getReceivedData()); // Returns any raw data bytes associated with this serial port event.
                         
-                        if ("off".equals(new String(newData))) {
-                            jButton3.setBackground(Color.white);
+                        if (newData.contains("on")) {
+                            String[] PWM = newData.split(",");
+                            
+                            try {
+                                jButton3.setBackground(new Color(Integer.parseInt(PWM[1]), 0, 0)); 
+                            }
+                            catch (Exception e) {
+                                jButton3.setBackground(Color.white); 
+                            }
                         }
-                        else {
-                            int i = Integer.parseInt(new String(newData));
-                            jButton3.setBackground(new Color(i, 0, 0));
-                        } 
+                        else jButton3.setBackground(Color.white); 
                     }
                 });
 
@@ -184,9 +190,7 @@ public class Project4_1 extends javax.swing.JFrame {
                     jComboBox1.setEnabled(false);
                     jButton2.setEnabled(true);
                 }
-                else {
-                    JOptionPane.showMessageDialog(this, "The port couldn't be opened!");
-                }
+                else JOptionPane.showMessageDialog(this, "The port couldn't be opened!");
             }
             catch (ArrayIndexOutOfBoundsException a) {
                 JOptionPane.showMessageDialog(this, "Select a COM port!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -204,12 +208,12 @@ public class Project4_1 extends javax.swing.JFrame {
                 jComboBox1.setEnabled(true);
                 jButton2.setEnabled(false);
 
-                if(serialPort1.getDescriptivePortName().contains("Pico")) {
+                if (serialPort1.getDescriptivePortName().contains("Pico")) {
                     serialPort1.clearDTR();
                     serialPort1.clearRTS();
                 }
             }
-            catch(HeadlessException e) {
+            catch (HeadlessException e) {
                 JOptionPane.showMessageDialog(this, e, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -223,10 +227,10 @@ public class Project4_1 extends javax.swing.JFrame {
             try {
                 outputStream1.write("start\n".getBytes());
                 isLedBreathing = true;
-                jButton2.setText("Stop Blinking");
+                jButton2.setText("Stop Breathing");
                 jButton1.setEnabled(false);
             }
-            catch(IOException e) {
+            catch (IOException e) {
                 JOptionPane.showMessageDialog(this, e, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -234,10 +238,10 @@ public class Project4_1 extends javax.swing.JFrame {
             try {
                 outputStream1.write("stop\n".getBytes());
                 isLedBreathing = false;
-                jButton2.setText("Start Blinking");
+                jButton2.setText("Start Breathing");
                 jButton1.setEnabled(true);
             }
-            catch(IOException e) {
+            catch (IOException e) {
                 JOptionPane.showMessageDialog(this, e, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -250,7 +254,7 @@ public class Project4_1 extends javax.swing.JFrame {
                 outputStream1.write("stop\n".getBytes());
                 serialPort1.closePort();
             }
-            catch(IOException e) {
+            catch (IOException e) {
                 JOptionPane.showMessageDialog(this, e, "Error", JOptionPane.ERROR_MESSAGE);
             }
         } 

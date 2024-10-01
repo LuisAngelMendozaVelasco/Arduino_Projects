@@ -10,62 +10,58 @@
 byte ledPins[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 int ledCounts = sizeof(ledPins);
 String command;
-int time_period = 100;
-char cstr[2];
 
 void setup() {
+	for (int i = 0; i < ledCounts; i++) pinMode(ledPins[i], OUTPUT);
+	
 	Serial.begin(9600); // Initialize serial communication
-
-	for (int i = 0; i < ledCounts; i++) {
-		pinMode(ledPins[i], OUTPUT);
-	}
 }
 
 void loop() {
-	// Serial.available() -> Get the number of bytes (characters) available for reading from the serial port
-	if (Serial.available() > 0) {
-		command = Serial.readStringUntil('\n'); // Read incoming serial data
-	}
+	int time_period = 100; // Declare variable
+
+	detect_trigger_word();
 
 	while (command == "start") {
 		for (int i = 0; i < ledCounts; i++) {
 			digitalWrite(ledPins[i], HIGH);
-			Serial.write(itoa(i, cstr, 10)); // Write binary data to the serial port
-			command = custom_delay(time_period); // Wait for a time and return string variable
+			Serial.print("on," + String(i));
+			custom_delay(time_period); // Wait for a time and return string variable
 			digitalWrite(ledPins[i], LOW);
 
 			if (command == "stop") break;
 		}
 
-		if (command == "stop") break;
+		if (command == "stop") {Serial.write("off"); break;}
 
 		for (int i = ledCounts - 1; i > -1; i--) {
 			digitalWrite(ledPins[i], HIGH);
-			Serial.write(itoa(i, cstr, 10)); // Write binary data to the serial port
-			command = custom_delay(time_period); // Wait for a time and return string variable
+			Serial.print("on," + String(i));
+			custom_delay(time_period); // Wait for a time and return string variable
 			digitalWrite(ledPins[i], LOW);
 
-			if (command == "stop") break;
+			if (command == "stop") {Serial.write("off"); break;}
 		}
 	}
 }
 
 // Function for custom time delay
-String custom_delay (int time_period) {
-	String command = "start";
+void custom_delay(int time_period) {
 	unsigned long time_now = millis(); // Return the number of milliseconds passed since the Arduino board began running the current program
 	
 	while (millis() < time_now + time_period) {
-		if (Serial.available() > 0) {
-      		command = Serial.readStringUntil('\n'); // Read incoming serial data
-
-			if (command == "stop") {
-				Serial.write("off"); // Write binary data to the serial port
-				
-				return command;
-			}
-		}        
+		detect_trigger_word();
+		
+		if (command == "stop") break;
 	}
+}
+
+void detect_trigger_word() {
+	String aux;
 	
-	return command;
+	if (Serial.available() > 0) { // Serial.available() -> Get the number of bytes (characters) available for reading from the serial port
+		aux = Serial.readStringUntil('\n'); // Read incoming serial data
+		
+		if (aux == "start" || aux == "stop") {command = aux;}
+	}
 }

@@ -9,7 +9,6 @@ import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import java.awt.Color;
 import java.awt.HeadlessException;
-import java.io.IOException;
 import javax.swing.JOptionPane;
 
 /**
@@ -75,7 +74,6 @@ public class Project2_1 extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setBackground(new java.awt.Color(255, 255, 255));
         jButton2.setText("LED");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -85,7 +83,7 @@ public class Project2_1 extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(50, 50, 50)
                 .addComponent(jButton1)
-                .addGap(109, 109, 109)
+                .addGap(101, 101, 101)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(50, 50, 50))
             .addGroup(layout.createSequentialGroup()
@@ -107,11 +105,11 @@ public class Project2_1 extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(117, 117, 117)
+                .addGap(115, 115, 115)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(116, 116, 116))
+                .addGap(114, 114, 114))
         );
 
         pack();
@@ -122,9 +120,8 @@ public class Project2_1 extends javax.swing.JFrame {
         commPorts = SerialPort.getCommPorts();
         jComboBox1.removeAllItems();
         
-        for (SerialPort commPort : commPorts) {
+        for (SerialPort commPort : commPorts)
             jComboBox1.addItem(commPort.getSystemPortName() + " - " + commPort.getDescriptivePortName());
-        }
     }//GEN-LAST:event_jComboBox1PopupMenuWillBecomeVisible
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -142,14 +139,10 @@ public class Project2_1 extends javax.swing.JFrame {
                     @Override
                     public void serialEvent(SerialPortEvent event)
                     {
-                        byte[] newData = event.getReceivedData();
+                        String newData = new String(event.getReceivedData()); // Returns any raw data bytes associated with this serial port event.
 
-                        if ("on".equals(new String(newData))) {
-                            jButton2.setBackground(Color.red);
-                        }
-                        else {
-                            jButton2.setBackground(Color.white);
-                        }
+                        if ("on".equals(newData)) jButton2.setBackground(Color.red);
+                        else jButton2.setBackground(Color.white);
                     }
                 });
 
@@ -166,9 +159,7 @@ public class Project2_1 extends javax.swing.JFrame {
                     jButton1.setText("Close Port");
                     jComboBox1.setEnabled(false);
                 }
-                else {
-                    JOptionPane.showMessageDialog(this, "The port couldn't be opened!");
-                }
+                else JOptionPane.showMessageDialog(this, "The port couldn't be opened!");
             }
             catch (ArrayIndexOutOfBoundsException a) {
                 JOptionPane.showMessageDialog(this, "Select a COM port!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -185,12 +176,12 @@ public class Project2_1 extends javax.swing.JFrame {
                 jButton1.setText("Open Port");
                 jComboBox1.setEnabled(true);
 
-                if(serialPort1.getDescriptivePortName().contains("Pico")) {
+                if (serialPort1.getDescriptivePortName().contains("Pico")) {
                     serialPort1.clearDTR();
                     serialPort1.clearRTS();
                 }
             }
-            catch(HeadlessException e) {
+            catch (HeadlessException e) {
                 JOptionPane.showMessageDialog(this, e, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }         
@@ -202,10 +193,10 @@ public class Project2_1 extends javax.swing.JFrame {
             try {
                 serialPort1.closePort();
             }
-            catch(HeadlessException e) {
+            catch (HeadlessException e) {
                 JOptionPane.showMessageDialog(this, e, "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } 
+        }
     }//GEN-LAST:event_formWindowClosing
 
     /**
